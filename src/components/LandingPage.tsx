@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 const LandingPage = () => {
   return (
     <div className="min-h-screen bg-brand-cream">
@@ -13,15 +15,22 @@ const LandingPage = () => {
         </p>
 
         <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-          <button className="bg-brand-pink hover:bg-brand-pink/90 rounded-full px-8 py-4 font-bold text-white transition-all shadow-lg hover:scale-105">
+          {/* Linked to /collection */}
+          <Link 
+            to="/collection" 
+            className="bg-brand-pink hover:bg-brand-pink/90 rounded-full px-8 py-4 font-bold text-white transition-all shadow-lg hover:scale-105 inline-block"
+          >
             Shop Collection
-          </button>
-          <button className="border-brand-charcoal text-brand-charcoal hover:bg-brand-charcoal hover:text-white rounded-full border-2 px-8 py-4 font-bold transition-all">
+          </Link>
+          
+          <Link 
+            to="/mission"
+            className="border-brand-charcoal text-brand-charcoal hover:bg-brand-charcoal hover:text-white rounded-full border-2 px-8 py-4 font-bold transition-all inline-block"
+          >
             Our Mission
-          </button>
+          </Link>
         </div>
 
-        {/* Placeholder for a featured image or product */}
         <div className="bg-brand-pink/20 mt-16 aspect-video w-full max-w-5xl rounded-2xl border-4 border-white shadow-2xl flex items-center justify-center text-brand-pink italic">
           [ Featured Lifestyle Image Here ]
         </div>

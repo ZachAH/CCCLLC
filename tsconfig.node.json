@@ -4,7 +4,8 @@
     "target": "ES2023",
     "lib": ["ES2023"],
     "module": "ESNext",
-    "types": ["node"],
+    /* Add "vite/client" here to fix the import.meta.env error */
+    "types": ["node", "vite/client"], 
     "skipLibCheck": true,
 
     /* Bundler mode */
@@ -22,5 +23,10 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["vite.config.ts"]
+  /* Add your Sanity files here so this config applies to them */
+  "include": [
+    "vite.config.ts", 
+    "sanity.config.ts", 
+    "sanity.cli.ts"
+  ]
 }
