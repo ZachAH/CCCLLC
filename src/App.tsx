@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { CartProvider } from './context/CartContext'; // Import the provider
+import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
@@ -8,39 +9,48 @@ import SeasonalPage from './components/SeasonalPage';
 import ContactPage from './components/ContactPage';
 import ProductDetails from './components/ProductDetails';
 import AboutPage from './components/AboutUs';
+import CartDrawer from './components/CartDrawer';
+import CheckoutPage from './components/CheckoutPage';
+
 
 function App() {
+  // State to handle the slide-out cart visibility
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const openCart = () => setIsCartOpen(true);
+  const closeCart = () => setIsCartOpen(false);
+
   return (
-    /* Wrapping the entire App in CartProvider so state 
-       persists across every route and component.
-    */
     <CartProvider>
       <Router>
         <div className="flex flex-col min-h-screen bg-brand-cream selection:bg-brand-pink/30">
           
-          {/* Navigation stays at the top */}
-          <Navbar />
+          {/* Pass the openCart function to the Navbar so the 
+              shopping bag icon can trigger the drawer.
+          */}
+          <Navbar onOpenCart={openCart} />
 
-          {/* Main content area grows to fill available space */}
           <main className="grow">
             <Routes>
               <Route path="/" element={<LandingPage />} />
               <Route path="/collection" element={<Collection />} />
-              
-              {/* The seasonal/special drop page */}
               <Route path="/seasonal" element={<SeasonalPage />} />
-              
-              {/* Individual Product Detail Page */}
               <Route path="/product/:slug" element={<ProductDetails />} />
-              
-              {/* Support and Story pages */}
               <Route path="/about" element={<AboutPage />} />            
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
             </Routes>
           </main>
 
-          {/* Footer stays at the bottom */}
           <Footer />
+
+          {/* The CartDrawer sits at the root level so it can 
+              overlay the entire app with its backdrop.
+          */}
+          <CartDrawer 
+            isOpen={isCartOpen} 
+            onClose={closeCart} 
+          />
         </div>
       </Router>
     </CartProvider>
