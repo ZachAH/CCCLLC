@@ -1,27 +1,45 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import LandingPage from './components/LandingPage';
 import Collection from './components/Collection'; 
 import SeasonalPage from './components/SeasonalPage';
 import ContactPage from './components/ContactPage';
+import ProductDetails from './components/ProductDetails';
+import AboutPage from './components/AboutUs';
 
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-brand-cream">
+      {/* Using 'flex flex-col min-h-screen' ensures that the 
+          footer is pushed to the bottom of the viewport 
+          on pages with little content.
+      */}
+      <div className="flex flex-col min-h-screen bg-brand-cream selection:bg-brand-pink/30">
+        
+        {/* Navigation stays at the top */}
         <Navbar />
 
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/collection" element={<Collection />} />
-          
-          {/* Pointing the /seasonal path to your new component */}
-          <Route path="/seasonal" element={<SeasonalPage />} />
-          
-          {/* Future pages */}
-          <Route path="/about" element={<div className="p-20 text-center">About Us Coming Soon</div>} />
-          <Route path="/contact" element={<ContactPage />} />
-        </Routes>
+        {/* Main content area grows to fill available space */}
+        <main className="grow">
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/collection" element={<Collection />} />
+            
+            {/* The seasonal/special drop page */}
+            <Route path="/seasonal" element={<SeasonalPage />} />
+            
+            {/* Individual Product Detail Page */}
+            <Route path="/product/:slug" element={<ProductDetails />} />
+            
+            {/* Support and Story pages */}
+            <Route path="/about" element={<AboutPage />} />            
+            <Route path="/contact" element={<ContactPage />} />
+          </Routes>
+        </main>
+
+        {/* Footer stays at the bottom */}
+        <Footer />
       </div>
     </Router>
   );

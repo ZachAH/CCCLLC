@@ -13,7 +13,7 @@ const Navbar = () => {
         {/* Navigation Links */}
         <div className="hidden md:flex items-center gap-8 font-bold text-brand-charcoal/90">
           <Link to="/about" className="hover:text-brand-pink transition-colors">About Us</Link>
-          <Link to="/collection" className="hover:text-brand-pink transition-colors">Shop</Link>
+          <Link to="/collection" className="hover:text-brand-pink transition-colors">Collection</Link>
           <Link
             to="/seasonal"
             className="hover:text-brand-pink transition-colors relative"

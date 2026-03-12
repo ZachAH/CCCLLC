@@ -1,20 +1,34 @@
 import { useEffect, useState } from 'react';
-import { client, GET_SEASONAL_PRODUCTS } from '../library/sanity';
 import { Link } from 'react-router-dom';
+import { client, GET_SEASONAL_PRODUCTS } from '../library/sanity';
+import ProductCard from './ProductCard';
 
-// Define the shape of our seasonal product
-interface SeasonalProduct {
+// 1. Interfaces (Keep these synced with your ProductCard)
+interface Variant {
+  variantName: string;
+  variantImage: string;
+  variantPriceId: string;
+  variantInStock: boolean;
+}
+
+interface Product {
   _id: string;
   name: string;
-  slug: string;
   imageUrl: string;
+  backImageUrl?: string;
   price: number;
-  seasonTag: string;
+  slug: string;
+  description: string;
+  category: string;
   inStock: boolean;
+  isSeasonal?: boolean;
+  seasonTag?: string;
+  stripePriceId: string;
+  variants?: Variant[];
 }
 
 const SeasonalPage = () => {
-  const [products, setProducts] = useState<SeasonalProduct[]>([]);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -24,76 +38,63 @@ const SeasonalPage = () => {
         setProducts(data);
         setLoading(false);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error("Sanity fetch error:", error);
+        setLoading(false);
+      });
   }, []);
 
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-cream">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-brand-pink border-t-transparent"></div>
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-brand-pink border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-brand-charcoal font-bold uppercase tracking-widest text-sm">Preparing the Season</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-brand-cream pb-20">
-      {/* Seasonal Hero Header */}
-      <header className="bg-brand-light-yellow/30 px-6 py-16 text-center">
-        <h1 className="text-brand-charcoal font-serif text-4xl md:text-6xl italic">
-          Celebrate the Season
-        </h1>
-        <p className="text-brand-charcoal/70 mt-4 text-lg font-medium uppercase tracking-widest">
-          Limited Edition Faith-Inspired Pieces
-        </p>
-      </header>
+    <div className="min-h-screen bg-brand-cream px-6 py-12 lg:py-20">
+      <div className="mx-auto max-w-6xl">
 
-      <main className="mx-auto max-w-7xl px-6 pt-12">
-        {products.length > 0 ? (
-          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
-            {products.map((product) => (
-              <Link 
-                key={product._id} 
-                to={`/product/${product.slug}`}
-                className="group flex flex-col"
-              >
-                {/* Image Container */}
-                <div className="relative aspect-4/5 overflow-hidden rounded-2xl bg-white shadow-md transition-all group-hover:shadow-xl">
-                  <img 
-                    src={product.imageUrl} 
-                    alt={product.name}
-                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                  />
-                  {/* Season Tag Badge */}
-                  {product.seasonTag && (
-                    <span className="absolute top-4 left-4 rounded-full bg-brand-pink px-3 py-1 text-xs font-bold text-white uppercase shadow-sm">
-                      {product.seasonTag}
-                    </span>
-                  )}
-                  {!product.inStock && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-brand-charcoal/40 backdrop-blur-[2px]">
-                      <span className="rounded-md bg-white px-4 py-2 font-bold text-brand-charcoal uppercase tracking-tighter">
-                        Sold Out
-                      </span>
-                    </div>
-                  )}
-                </div>
+        {/* Header Section */}
+        <div className="mb-16 flex flex-col md:flex-row items-center justify-between gap-6">
+          <Link to="/" className="text-brand-charcoal text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors order-2 md:order-1">
+            ← Back Home
+          </Link>
 
-                {/* Product Info */}
-                <div className="mt-4 text-center">
-                  <h3 className="text-brand-charcoal text-xl font-bold">{product.name}</h3>
-                  <p className="text-brand-pink font-semibold mt-1">${product.price}</p>
-                </div>
-              </Link>
-            ))}
+          <div className="text-center order-1 md:order-2">
+            <p className="text-brand-pink text-xs font-black uppercase tracking-[0.3em] mb-2">Celebrate the</p>
+            <h2 className="text-brand-charcoal text-4xl md:text-5xl font-black uppercase tracking-tighter">
+              Current Season
+            </h2>
+            <div className="h-1.5 w-16 bg-brand-light-yellow mx-auto mt-3"></div>
           </div>
-        ) : (
-          <div className="text-center py-20">
-            <p className="text-brand-charcoal/50 italic text-xl">
-              New seasonal items arriving soon. Stay tuned!
+
+          <div className="hidden md:block w-20 order-3"></div>
+        </div>
+
+        {/* Updated Seasonal Grid - Cleaner version */}
+        <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+          {products.map((product) => (
+            <div key={product._id}>
+              {/* Remove the absolute positioned "seasonTag" div that was here */}
+              <ProductCard product={product} />
+            </div>
+          ))}
+        </div>
+
+        {/* Empty State */}
+        {products.length === 0 && (
+          <div className="py-24 text-center bg-white/40 rounded-3xl border-2 border-dashed border-brand-light-yellow/40">
+            <p className="text-brand-charcoal/50 font-medium italic text-xl tracking-tight">
+              A new season is blooming. Check back soon for the next drop!
             </p>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 };
