@@ -27,9 +27,32 @@ export default {
           { title: 'Hats', value: 'hats' },
           { title: 'Bracelets', value: 'bracelets' },
           { title: 'Candles', value: 'candles' },
-          { title: 'Lifestyle & More', value: 'lifestyle' }, // The "Catch-all"
+          { title: 'Lifestyle & More', value: 'lifestyle' },
         ],
         layout: 'radio',
+      },
+    },
+    {
+      name: 'isSeasonal',
+      title: 'Is this a Seasonal/Special item?',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Enable this to show the product in the "Celebrate the Season" section.',
+    },
+    {
+      name: 'seasonTag',
+      title: 'Season Tag',
+      type: 'string',
+      description: 'Categorize this for specific holidays or events.',
+      hidden: ({ document }: any) => !document?.isSeasonal, // Only visible if isSeasonal is true
+      options: {
+        list: [
+          { title: 'Easter', value: 'easter' },
+          { title: 'Christmas', value: 'christmas' },
+          { title: 'Fall/Autumn', value: 'fall' },
+          { title: 'Summer', value: 'summer' },
+          { title: 'Mother/Father Day', value: 'parent-day' },
+        ],
       },
     },
     {
