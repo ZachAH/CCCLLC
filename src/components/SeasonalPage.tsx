@@ -2,32 +2,13 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { client, GET_SEASONAL_PRODUCTS } from '../library/sanity';
 import ProductCard from './ProductCard';
+// 1. Import the official Product type from the card file
+import type { Product } from './ProductCard'; 
 
-// 1. Interfaces (Keep these synced with your ProductCard)
-interface Variant {
-  variantName: string;
-  variantImage: string;
-  variantPriceId: string;
-  variantInStock: boolean;
-}
-
-interface Product {
-  _id: string;
-  name: string;
-  imageUrl: string;
-  backImageUrl?: string;
-  price: number;
-  slug: string;
-  description: string;
-  category: string;
-  inStock: boolean;
-  isSeasonal?: boolean;
-  seasonTag?: string;
-  stripePriceId: string;
-  variants?: Variant[];
-}
+// DELETE the local 'interface Variant' and 'interface Product' sections from here!
 
 const SeasonalPage = () => {
+  // 2. Use that imported Product type here
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -76,11 +57,10 @@ const SeasonalPage = () => {
           <div className="hidden md:block w-20 order-3"></div>
         </div>
 
-        {/* Updated Seasonal Grid - Cleaner version */}
+        {/* Seasonal Grid */}
         <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
           {products.map((product) => (
             <div key={product._id}>
-              {/* Remove the absolute positioned "seasonTag" div that was here */}
               <ProductCard product={product} />
             </div>
           ))}

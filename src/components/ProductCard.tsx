@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
-// 1. Interfaces - Exported so other pages can use them
+// 1. Interfaces - Exported for global use
 export interface Variant {
   variantName: string;
   variantImage: string;
@@ -21,6 +21,7 @@ export interface Product {
   inStock: boolean;
   isSeasonal?: boolean;
   seasonTag?: string;
+  isCustomizable?: boolean;
   stripePriceId: string;
   variants?: Variant[];
 }
@@ -33,24 +34,11 @@ const ProductCard = ({ product }: { product: Product }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   const activeImage = selectedVariant?.variantImage || product.imageUrl;
-  const activePriceId = selectedVariant?.variantPriceId || product.stripePriceId;
   const isOutOfStock = selectedVariant ? !selectedVariant.variantInStock : !product.inStock;
-
-  const handleCheckout = (e: React.MouseEvent, priceId: string) => {
-    // Prevent the click from triggering the parent <Link>
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (!priceId) {
-      alert("Coming soon! Stripe ID not linked yet.");
-      return;
-    }
-    console.log("Redirecting to Stripe:", priceId);
-  };
 
   return (
     <div className="group flex flex-col">
-      {/* Wrap the clickable area in a Link to the specific product slug */}
+      {/* Primary Image Link */}
       <Link to={`/product/${product.slug}`} className="cursor-pointer">
         <div 
           className="relative aspect-[4/5] overflow-hidden rounded-2xl border-4 border-white bg-white shadow-lg transition-all duration-300 group-hover:shadow-xl"
@@ -80,9 +68,10 @@ const ProductCard = ({ product }: { product: Product }) => {
             )}
           </div>
 
+          {/* Front/Back Indicator */}
           {product.backImageUrl && (
             <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-2 py-1 rounded text-[9px] font-black uppercase tracking-tighter text-brand-charcoal shadow-sm">
-              {isHovered ? 'Back' : 'Front'}
+              {isHovered ? 'Back View' : 'Front View'}
             </div>
           )}
         </div>
@@ -90,34 +79,31 @@ const ProductCard = ({ product }: { product: Product }) => {
 
       <div className="mt-6 px-2">
         <div className="flex justify-between items-start">
-          {/* Link the Title section as well */}
-          <Link to={`/product/${product.slug}`} className="flex-1 block hover:opacity-70 transition-opacity">
+          {/* Info Section - Now the main anchor for the whole card */}
+          <Link to={`/product/${product.slug}`} className="flex-1 block transition-all">
             <p className="text-[10px] uppercase tracking-[0.2em] text-brand-pink font-bold mb-1">
               {product.category.replace('-', ' ')}
             </p>
-            <h3 className="text-brand-charcoal text-xl font-bold uppercase tracking-tight leading-tight">
+            <h3 className="text-brand-charcoal text-xl font-bold uppercase tracking-tight leading-tight group-hover:text-brand-pink transition-colors">
               {product.name}
             </h3>
-            <p className="text-brand-charcoal/60 font-medium mt-1">${product.price}</p>
+            <p className="text-brand-charcoal/60 font-medium mt-1">
+              {product.isCustomizable ? `From $${product.price}` : `$${product.price}`}
+            </p>
           </Link>
           
-          {/* Quick Add Button - Styled with e.stopPropagation to avoid jumping to product page */}
-          <button 
-            onClick={(e) => handleCheckout(e, activePriceId)}
-            disabled={isOutOfStock}
-            className={`rounded-full p-3 text-white transition-all shadow-md ml-4 z-10 ${
-              isOutOfStock ? 'bg-gray-300 cursor-not-allowed' : 'bg-brand-charcoal hover:bg-brand-pink hover:scale-110 active:scale-95'
-            }`}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-            </svg>
-          </button>
+          {/* Decorative Arrow Indicator instead of "Add to Cart" */}
+          <div className="text-brand-pink opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0 flex items-center gap-1 mt-6">
+             <span className="text-[9px] font-black uppercase tracking-[0.2em]">View</span>
+             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3 h-3">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
+             </svg>
+          </div>
         </div>
 
-        {/* Variant Selectors - prevent clicking these from going to the product page */}
+        {/* Variant Selectors - Keeping these as they are great for visual shopping */}
         {product.variants && product.variants.length > 0 && (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap gap-2">
             {product.variants.map((variant) => (
               <button
                 key={variant.variantName}
@@ -126,7 +112,7 @@ const ProductCard = ({ product }: { product: Product }) => {
                     e.stopPropagation();
                     setSelectedVariant(variant);
                 }}
-                className={`px-3 py-1 text-[11px] font-bold rounded-full border-2 transition-all uppercase tracking-wider z-10 ${
+                className={`px-3 py-1 text-[10px] font-bold rounded-full border-2 transition-all uppercase tracking-wider z-10 ${
                   selectedVariant?.variantName === variant.variantName
                     ? 'border-brand-pink bg-brand-pink text-white shadow-sm'
                     : 'border-gray-100 bg-white text-gray-400 hover:border-brand-pink/30'

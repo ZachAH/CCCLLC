@@ -74,6 +74,13 @@ export default {
       rows: 4,
     },
     {
+      name: 'isCustomizable',
+      title: 'Allow Customization?',
+      type: 'boolean',
+      initialValue: false,
+      description: 'Enable this to allow customers to pick their own garment color and style.',
+    },
+    {
       name: 'price',
       title: 'Price (in USD)',
       type: 'number',

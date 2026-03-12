@@ -7,7 +7,6 @@ export const client = createClient({
   apiVersion: '2024-03-11',
 });
 
-// Update the main query to include the new seasonal fields
 export const GET_PRODUCTS = `*[_type == "product"]{
   _id,
   name,
@@ -20,6 +19,7 @@ export const GET_PRODUCTS = `*[_type == "product"]{
   inStock,
   isSeasonal,
   seasonTag,
+  isCustomizable,
   stripePriceId,
   variants[]{
     variantName,
@@ -34,11 +34,12 @@ export const GET_SEASONAL_PRODUCTS = `*[_type == "product" && isSeasonal == true
   name,
   "slug": slug.current,
   "imageUrl": image.asset->url,
-  "backImageUrl": backImage.asset->url, // Added this too for the flip effect!
+  "backImageUrl": backImage.asset->url,
   price,
   seasonTag,
   inStock,
   isSeasonal,
+  isCustomizable,
   category,
   stripePriceId,
   variants[]{
@@ -61,6 +62,7 @@ export const GET_PRODUCT_BY_SLUG = `*[_type == "product" && slug.current == $slu
   inStock,
   isSeasonal,
   seasonTag,
+  isCustomizable,
   stripePriceId,
   variants[]{
     variantName,

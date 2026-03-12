@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { client, GET_PRODUCTS } from '../library/sanity';
 import ProductCard from './ProductCard'; 
-import type { Product } from './ProductCard'; // Use this separate line or { Product }
+import type { Product } from './ProductCard';
 
 const Collection = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -20,6 +20,16 @@ const Collection = () => {
         setLoading(false);
       });
   }, []);
+
+  // Helper function to group products by category
+  const groupedProducts = products.reduce((acc: { [key: string]: Product[] }, product) => {
+    const category = product.category || 'Other';
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(product);
+    return acc;
+  }, {});
 
   if (loading) {
     return (
@@ -50,15 +60,28 @@ const Collection = () => {
           <div className="hidden md:block w-20 order-3"></div>
         </div>
 
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
+        {/* Categorized Sections */}
+        {Object.keys(groupedProducts).length > 0 ? (
+          Object.entries(groupedProducts).map(([category, items]) => (
+            <section key={category} className="mb-20">
+              {/* Category Title */}
+              <div className="flex items-center gap-4 mb-8">
+                <h3 className="text-brand-charcoal text-2xl font-black uppercase tracking-widest italic">
+                  {category.replace('-', ' ')}
+                </h3>
+                <div className="flex-grow h-px bg-brand-charcoal/10"></div>
+              </div>
 
-        {/* Empty State */}
-        {products.length === 0 && (
+              {/* Product Grid for this category */}
+              <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
+                {items.map((product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))}
+              </div>
+            </section>
+          ))
+        ) : (
+          /* Empty State */
           <div className="py-24 text-center bg-white/40 rounded-3xl border-2 border-dashed border-brand-pink/20">
             <p className="text-brand-charcoal/50 font-medium italic text-xl tracking-tight">
               Our latest journey is being curated. Check back soon!
