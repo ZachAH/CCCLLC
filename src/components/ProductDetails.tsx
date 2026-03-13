@@ -56,7 +56,7 @@ const ProductDetails = () => {
   // 3. Updated handleAddToCart with Context logic
   const handleAddToCart = () => {
     addToCart({
-      id: product._id,
+      _id: product._id,
       name: product.name,
       price: displayPrice,
       image: activeImage,
