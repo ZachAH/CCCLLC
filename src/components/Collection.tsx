@@ -21,7 +21,6 @@ const Collection = () => {
       });
   }, []);
 
-  // Helper function to group products by category
   const groupedProducts = products.reduce((acc: { [key: string]: Product[] }, product) => {
     const category = product.category || 'Other';
     if (!acc[category]) {
@@ -30,6 +29,25 @@ const Collection = () => {
     acc[category].push(product);
     return acc;
   }, {});
+
+  const categories = Object.keys(groupedProducts);
+
+  // Smooth scroll helper
+  const scrollToCategory = (category: string) => {
+    const element = document.getElementById(`category-${category}`);
+    if (element) {
+      const offset = 100; // Account for sticky navbars
+      const bodyRect = document.body.getBoundingClientRect().top;
+      const elementRect = element.getBoundingClientRect().top;
+      const elementPosition = elementRect - bodyRect;
+      const offsetPosition = elementPosition - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   if (loading) {
     return (
@@ -47,7 +65,7 @@ const Collection = () => {
       <div className="mx-auto max-w-6xl">
         
         {/* Navigation & Header */}
-        <div className="mb-16 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="mb-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <Link to="/" className="text-brand-charcoal text-xs font-bold uppercase tracking-widest hover:text-brand-pink transition-colors order-2 md:order-1">
             ← Back Home
           </Link>
@@ -60,10 +78,31 @@ const Collection = () => {
           <div className="hidden md:block w-20 order-3"></div>
         </div>
 
+        {/* CATEGORY MINI-NAV */}
+        {categories.length > 1 && (
+          <div className="sticky top-20 z-40 bg-brand-cream/90 backdrop-blur-md py-4 mb-12 border-b border-brand-charcoal/5">
+            <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+              {categories.map((category) => (
+                <button
+                  key={category}
+                  onClick={() => scrollToCategory(category)}
+                  className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-charcoal/40 hover:text-brand-pink transition-all border-b-2 border-transparent hover:border-brand-pink pb-1"
+                >
+                  {category.replace('-', ' ')}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Categorized Sections */}
-        {Object.keys(groupedProducts).length > 0 ? (
+        {categories.length > 0 ? (
           Object.entries(groupedProducts).map(([category, items]) => (
-            <section key={category} className="mb-20">
+            <section 
+              key={category} 
+              id={`category-${category}`} // Important for scrolling
+              className="mb-20 scroll-mt-32" 
+            >
               {/* Category Title */}
               <div className="flex items-center gap-4 mb-8">
                 <h3 className="text-brand-charcoal text-2xl font-black uppercase tracking-widest italic">
@@ -72,7 +111,7 @@ const Collection = () => {
                 <div className="flex-grow h-px bg-brand-charcoal/10"></div>
               </div>
 
-              {/* Product Grid for this category */}
+              {/* Product Grid */}
               <div className="grid grid-cols-1 gap-x-8 gap-y-16 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((product) => (
                   <ProductCard key={product._id} product={product} />
@@ -81,7 +120,6 @@ const Collection = () => {
             </section>
           ))
         ) : (
-          /* Empty State */
           <div className="py-24 text-center bg-white/40 rounded-3xl border-2 border-dashed border-brand-pink/20">
             <p className="text-brand-charcoal/50 font-medium italic text-xl tracking-tight">
               Our latest journey is being curated. Check back soon!
