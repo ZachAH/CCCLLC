@@ -114,7 +114,7 @@ const LandingPage = () => {
           transition={{ delay: 2.2, duration: 1 }}
           className="bg-brand-pink/10 mt-16 aspect-video w-full max-w-5xl rounded-3xl border-4 border-white shadow-2xl flex items-center justify-center text-brand-pink italic"
         >
-          <span className="opacity-40 font-black tracking-widest uppercase">Saved & Sent Gallery</span>
+          <span className="opacity-40 font-black tracking-widest uppercase">I am thinking a picutre of the family or you working on the items?</span>
         </motion.div>
       </section>
 
