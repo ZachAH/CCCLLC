@@ -44,7 +44,7 @@ export default {
       title: 'Season Tag',
       type: 'string',
       description: 'Categorize this for specific holidays or events.',
-      hidden: ({ document }: any) => !document?.isSeasonal, // Only visible if isSeasonal is true
+      hidden: ({ document }: any) => !document?.isSeasonal, 
       options: {
         list: [
           { title: 'Easter', value: 'easter' },
@@ -67,12 +67,16 @@ export default {
       type: 'image',
       options: { hotspot: true },
     },
+    // --- UPDATED DESCRIPTION FIELD ---
     {
       name: 'description',
       title: 'Description',
-      type: 'text',
-      rows: 4,
+      type: 'array',
+      description: 'Use Bullet Points or Bold text to make scent lists easier to read.',
+      of: [{ type: 'block' }],
+      validation: (Rule: any) => Rule.required().min(1).error('A description is required for Stripe checkout.'),
     },
+    // ---------------------------------
     {
       name: 'isCustomizable',
       title: 'Allow Customization?',

@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { client, GET_PRODUCT_BY_SLUG } from '../library/sanity';
+import { PortableText } from '@portabletext/react';
 import type { Product, Variant } from './ProductCard';
 import { useCart } from '../context/CartContext';
+
 
 const ProductDetails = () => {
   const { slug } = useParams<{ slug: string }>();
   const { addToCart } = useCart();
-  
+
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedVariant, setSelectedVariant] = useState<Variant | null>(null);
@@ -46,8 +48,8 @@ const ProductDetails = () => {
 
   if (!product) return <div className="min-h-screen bg-brand-cream p-20 text-center uppercase font-black tracking-widest">Product not found</div>;
 
-  const activeImage = showBack && product.backImageUrl 
-    ? product.backImageUrl 
+  const activeImage = showBack && product.backImageUrl
+    ? product.backImageUrl
     : (selectedVariant?.variantImage || product.imageUrl);
 
   const displayPrice = product.isCustomizable ? stylePrices[garmentStyle] : product.price;
@@ -77,18 +79,18 @@ const ProductDetails = () => {
         </Link>
 
         <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-          
+
           {/* Left: Image Viewer */}
           <div className="lg:sticky lg:top-24">
             <div className="relative aspect-4/5 max-h-[70vh] lg:max-h-none rounded-4xl overflow-hidden bg-white shadow-2xl border-8 md:border-12 border-white">
-              <img 
-                src={activeImage} 
-                alt={product.name} 
+              <img
+                src={activeImage}
+                alt={product.name}
                 className="w-full h-full object-cover transition-all duration-700 ease-in-out"
               />
-              
+
               {product.backImageUrl && (
-                <button 
+                <button
                   onClick={() => setShowBack(!showBack)}
                   className="absolute bottom-6 right-6 bg-brand-charcoal text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-brand-pink transition-all active:scale-95"
                 >
@@ -110,8 +112,12 @@ const ProductDetails = () => {
 
             <div className="h-px w-full bg-brand-charcoal/10 mb-8 md:mb-10" />
 
-            <div className="text-brand-charcoal/70 mb-10 md:mb-12 text-base md:text-lg leading-relaxed">
-              {product.description}
+            <div className="text-brand-charcoal/70 mb-10 md:mb-12 text-base md:text-lg leading-relaxed prose prose-stone max-w-none">
+              {Array.isArray(product.description) ? (
+                <PortableText value={product.description} />
+              ) : (
+                <p>{product.description}</p>
+              )}
             </div>
 
             {/* --- CUSTOMIZATION PANEL --- */}
@@ -131,11 +137,10 @@ const ProductDetails = () => {
                         <button
                           key={style}
                           onClick={() => setGarmentStyle(style)}
-                          className={`py-3 px-2 rounded-xl text-[10px] font-bold uppercase transition-all border-2 ${
-                            garmentStyle === style 
-                            ? 'border-brand-pink bg-brand-pink text-white shadow-md' 
-                            : 'border-brand-cream bg-brand-cream/50 text-brand-charcoal/50 hover:border-brand-pink/20'
-                          }`}
+                          className={`py-3 px-2 rounded-xl text-[10px] font-bold uppercase transition-all border-2 ${garmentStyle === style
+                              ? 'border-brand-pink bg-brand-pink text-white shadow-md'
+                              : 'border-brand-cream bg-brand-cream/50 text-brand-charcoal/50 hover:border-brand-pink/20'
+                            }`}
                         >
                           {style}
                         </button>
@@ -147,7 +152,7 @@ const ProductDetails = () => {
                     {/* Size Select */}
                     <div className="flex flex-col gap-3">
                       <label className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40">Size (up to 5X)</label>
-                      <select 
+                      <select
                         value={customSize}
                         onChange={(e) => setCustomSize(e.target.value)}
                         className="w-full bg-brand-cream/50 border-2 border-transparent focus:border-brand-pink rounded-xl px-4 py-4 outline-none font-bold text-sm transition-all appearance-none"
@@ -161,7 +166,7 @@ const ProductDetails = () => {
                     {/* Color Input */}
                     <div className="flex flex-col gap-3">
                       <label className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40">Garment Color</label>
-                      <input 
+                      <input
                         type="text"
                         placeholder="e.g. Sage"
                         value={customColor}
@@ -183,11 +188,10 @@ const ProductDetails = () => {
                     <button
                       key={v.variantName}
                       onClick={() => { setSelectedVariant(v); setShowBack(false); }}
-                      className={`grow sm:grow-0 px-6 py-3.5 rounded-2xl border-2 font-bold transition-all uppercase tracking-widest text-[10px] ${
-                        selectedVariant?.variantName === v.variantName
+                      className={`grow sm:grow-0 px-6 py-3.5 rounded-2xl border-2 font-bold transition-all uppercase tracking-widest text-[10px] ${selectedVariant?.variantName === v.variantName
                           ? 'border-brand-pink bg-brand-pink text-white shadow-lg'
                           : 'border-brand-charcoal/5 bg-white text-brand-charcoal/40 hover:border-brand-pink/20'
-                      }`}
+                        }`}
                     >
                       {v.variantName}
                     </button>
@@ -200,11 +204,10 @@ const ProductDetails = () => {
             <button
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`w-full py-5 md:py-6 rounded-3xl font-black uppercase tracking-[0.3em] text-xs md:text-sm shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 ${
-                isOutOfStock 
-                ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
-                : 'bg-brand-charcoal text-white hover:bg-brand-pink'
-              }`}
+              className={`w-full py-5 md:py-6 rounded-3xl font-black uppercase tracking-[0.3em] text-xs md:text-sm shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 ${isOutOfStock
+                  ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  : 'bg-brand-charcoal text-white hover:bg-brand-pink'
+                }`}
             >
               {isOutOfStock ? 'Sold Out' : 'Add to Journey'}
             </button>

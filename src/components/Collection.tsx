@@ -108,7 +108,7 @@ const Collection = () => {
                 <h3 className="text-brand-charcoal text-2xl font-black uppercase tracking-widest italic">
                   {category.replace('-', ' ')}
                 </h3>
-                <div className="flex-grow h-px bg-brand-charcoal/10"></div>
+                <div className="grow h-px bg-brand-charcoal/10"></div>
               </div>
 
               {/* Product Grid */}
