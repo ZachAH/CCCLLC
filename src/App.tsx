@@ -11,6 +11,7 @@ import ProductDetails from './components/ProductDetails';
 import AboutPage from './components/AboutUs';
 import CartDrawer from './components/CartDrawer';
 import CheckoutPage from './components/CheckoutPage';
+import Success from './pages/Success';
 
 
 function App() {
@@ -39,6 +40,9 @@ function App() {
               <Route path="/about" element={<AboutPage />} />            
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/checkout" element={<CheckoutPage />} />
+              
+              {/* Stripe will redirect back to this route */}
+              <Route path="/success" element={<Success />} />
             </Routes>
           </main>
 
