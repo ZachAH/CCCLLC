@@ -53,7 +53,6 @@ const ProductDetails = () => {
   const displayPrice = product.isCustomizable ? stylePrices[garmentStyle] : product.price;
   const isOutOfStock = selectedVariant ? !selectedVariant.variantInStock : !product.inStock;
 
-  // 3. Updated handleAddToCart with Context logic
   const handleAddToCart = () => {
     addToCart({
       _id: product._id,
@@ -61,14 +60,12 @@ const ProductDetails = () => {
       price: displayPrice,
       image: activeImage,
       quantity: 1,
-      // Pass the custom fields to the cart
       style: product.isCustomizable ? garmentStyle : undefined,
       size: product.isCustomizable ? customSize : undefined,
       color: product.isCustomizable ? customColor : undefined,
       variantName: selectedVariant?.variantName
     });
-
-    // We'll replace this alert with a slide-out cart drawer soon!
+    // The alert is still here as requested, but we'll move to the Drawer soon!
     alert(`${product.name} added to your journey!`);
   };
 
@@ -79,11 +76,11 @@ const ProductDetails = () => {
           ← Back to Collection
         </Link>
 
-        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
+        <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
           
           {/* Left: Image Viewer */}
-          <div className="sticky top-24">
-            <div className="relative aspect-[4/5] rounded-[2rem] overflow-hidden bg-white shadow-2xl border-[12px] border-white">
+          <div className="lg:sticky lg:top-24">
+            <div className="relative aspect-4/5 max-h-[70vh] lg:max-h-none rounded-4xl overflow-hidden bg-white shadow-2xl border-8 md:border-12 border-white">
               <img 
                 src={activeImage} 
                 alt={product.name} 
@@ -93,7 +90,7 @@ const ProductDetails = () => {
               {product.backImageUrl && (
                 <button 
                   onClick={() => setShowBack(!showBack)}
-                  className="absolute bottom-8 right-8 bg-brand-charcoal text-white px-6 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-brand-pink transition-all active:scale-95"
+                  className="absolute bottom-6 right-6 bg-brand-charcoal text-white px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-xl hover:bg-brand-pink transition-all active:scale-95"
                 >
                   View {showBack ? 'Front' : 'Back'}
                 </button>
@@ -106,21 +103,21 @@ const ProductDetails = () => {
             <span className="text-brand-pink font-black uppercase tracking-[0.4em] text-[10px] mb-4">
               {product.category?.replace('-', ' ')}
             </span>
-            <h1 className="text-brand-charcoal text-5xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-6">
+            <h1 className="text-brand-charcoal text-4xl md:text-7xl font-black uppercase tracking-tighter leading-[0.9] mb-6">
               {product.name}
             </h1>
-            <p className="text-3xl font-medium text-brand-charcoal/90 mb-10">${displayPrice}</p>
+            <p className="text-2xl md:text-3xl font-medium text-brand-charcoal/90 mb-8 md:mb-10">${displayPrice}</p>
 
-            <div className="h-px w-full bg-brand-charcoal/10 mb-10" />
+            <div className="h-px w-full bg-brand-charcoal/10 mb-8 md:mb-10" />
 
-            <div className="text-brand-charcoal/70 mb-12 text-lg leading-relaxed">
+            <div className="text-brand-charcoal/70 mb-10 md:mb-12 text-base md:text-lg leading-relaxed">
               {product.description}
             </div>
 
             {/* --- CUSTOMIZATION PANEL --- */}
             {product.isCustomizable && (
-              <div className="mb-12 p-8 bg-white rounded-[2rem] shadow-sm border-2 border-brand-light-yellow/30">
-                <div className="flex items-center gap-3 mb-8">
+              <div className="mb-10 md:mb-12 p-6 md:p-8 bg-white rounded-4xl shadow-sm border-2 border-brand-light-yellow/30">
+                <div className="flex items-center gap-3 mb-6 md:mb-8">
                   <div className="w-2 h-2 rounded-full bg-brand-light-yellow animate-pulse"></div>
                   <h3 className="text-brand-charcoal font-black uppercase tracking-widest text-xs">Custom Options</h3>
                 </div>
@@ -134,7 +131,7 @@ const ProductDetails = () => {
                         <button
                           key={style}
                           onClick={() => setGarmentStyle(style)}
-                          className={`py-3 px-4 rounded-xl text-[11px] font-bold uppercase transition-all border-2 ${
+                          className={`py-3 px-2 rounded-xl text-[10px] font-bold uppercase transition-all border-2 ${
                             garmentStyle === style 
                             ? 'border-brand-pink bg-brand-pink text-white shadow-md' 
                             : 'border-brand-cream bg-brand-cream/50 text-brand-charcoal/50 hover:border-brand-pink/20'
@@ -146,7 +143,7 @@ const ProductDetails = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {/* Size Select */}
                     <div className="flex flex-col gap-3">
                       <label className="text-[10px] font-black uppercase tracking-widest text-brand-charcoal/40">Size (up to 5X)</label>
@@ -177,18 +174,18 @@ const ProductDetails = () => {
               </div>
             )}
 
-            {/* Standard Variants (if any) */}
+            {/* Standard Variants (The Overlap Fix is here) */}
             {!product.isCustomizable && product.variants && product.variants.length > 0 && (
-              <div className="mb-12">
-                <h3 className="text-brand-charcoal font-black uppercase tracking-widest text-xs mb-6">Select Option</h3>
-                <div className="flex flex-wrap gap-3">
+              <div className="mb-10 md:mb-12">
+                <h3 className="text-brand-charcoal font-black uppercase tracking-widest text-[10px] mb-4">Select Option</h3>
+                <div className="flex flex-wrap gap-2 md:gap-3">
                   {product.variants.map((v) => (
                     <button
                       key={v.variantName}
                       onClick={() => { setSelectedVariant(v); setShowBack(false); }}
-                      className={`px-8 py-4 rounded-2xl border-2 font-bold transition-all uppercase tracking-widest text-xs ${
+                      className={`grow sm:grow-0 px-6 py-3.5 rounded-2xl border-2 font-bold transition-all uppercase tracking-widest text-[10px] ${
                         selectedVariant?.variantName === v.variantName
-                          ? 'border-brand-pink bg-brand-pink text-white shadow-xl'
+                          ? 'border-brand-pink bg-brand-pink text-white shadow-lg'
                           : 'border-brand-charcoal/5 bg-white text-brand-charcoal/40 hover:border-brand-pink/20'
                       }`}
                     >
@@ -203,7 +200,7 @@ const ProductDetails = () => {
             <button
               onClick={handleAddToCart}
               disabled={isOutOfStock}
-              className={`w-full py-6 rounded-3xl font-black uppercase tracking-[0.3em] text-sm shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 ${
+              className={`w-full py-5 md:py-6 rounded-3xl font-black uppercase tracking-[0.3em] text-xs md:text-sm shadow-2xl transition-all transform hover:-translate-y-1 active:scale-95 ${
                 isOutOfStock 
                 ? 'bg-gray-200 text-gray-400 cursor-not-allowed' 
                 : 'bg-brand-charcoal text-white hover:bg-brand-pink'

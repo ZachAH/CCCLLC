@@ -13,7 +13,10 @@ const sanityClient = createClient({
 
 export const handler = async (event, context) => {
   if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, body: JSON.stringify({ message: 'Method Not Allowed' }) };
+    return { 
+      statusCode: 405, 
+      body: JSON.stringify({ message: 'Method Not Allowed' }) 
+    };
   }
 
   try {
@@ -37,13 +40,19 @@ export const handler = async (event, context) => {
         throw new Error(`Product not found for ID: ${cartItem._id}`);
       }
 
+      // Check for variant/size and trim
+      // If both are missing, this results in an empty string
+      const descriptionText = `${cartItem.variantName || ''} ${cartItem.size || ''}`.trim();
+
       return {
         price_data: {
           currency: 'usd',
           product_data: {
             name: officialProduct.name,
             images: [officialProduct.imageUrl],
-            description: `${cartItem.variantName || ''} ${cartItem.size || ''}`.trim(),
+            // FIX: If descriptionText is empty, we pass undefined so Stripe ignores the field
+            // Stripe throws a 500 error if description is an empty string ""
+            description: descriptionText || undefined,
           },
           // We use officialProduct.price, NOT cartItem.price from the frontend
           unit_amount: Math.round(officialProduct.price * 100), 
