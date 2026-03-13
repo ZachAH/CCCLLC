@@ -3,6 +3,7 @@
 import { defineConfig } from 'sanity';
 import { structureTool } from 'sanity/structure';
 import product from './src/schemas/product';
+import faq from './src/schemas/faq';
 
 // Vite handles the env loading. 
 const projectId = "tym561ok";
@@ -18,6 +19,6 @@ export default defineConfig({
   plugins: [structureTool()],
 
   schema: {
-    types: [product],
+    types: [product, faq],
   },
 });

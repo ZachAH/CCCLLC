@@ -33,6 +33,10 @@ const Navbar = ({ onOpenCart }: NavbarProps) => {
         <div className="hidden md:flex items-center gap-10 text-[11px] font-black uppercase tracking-[0.2em] text-brand-charcoal/70">
           <Link to="/about" className="hover:text-brand-pink transition-colors">About Us</Link>
           <Link to="/collection" className="hover:text-brand-pink transition-colors">Collection</Link>
+          
+          {/* NEW: FAQ Link */}
+          <Link to="/faq" className="hover:text-brand-pink transition-colors">FAQ</Link>
+          
           <Link
             to="/seasonal"
             className="hover:text-brand-pink transition-colors relative"

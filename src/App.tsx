@@ -12,7 +12,7 @@ import AboutPage from './components/AboutUs';
 import CartDrawer from './components/CartDrawer';
 import CheckoutPage from './components/CheckoutPage';
 import Success from './pages/Success';
-
+import FAQ from './pages/Faq';
 
 function App() {
   // State to handle the slide-out cart visibility
@@ -39,6 +39,7 @@ function App() {
               <Route path="/product/:slug" element={<ProductDetails />} />
               <Route path="/about" element={<AboutPage />} />            
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/faq" element={<FAQ />} />
               <Route path="/checkout" element={<CheckoutPage />} />
               
               {/* Stripe will redirect back to this route */}
