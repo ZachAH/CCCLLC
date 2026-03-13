@@ -13,6 +13,7 @@ import CartDrawer from './components/CartDrawer';
 import CheckoutPage from './components/CheckoutPage';
 import Success from './pages/Success';
 import FAQ from './pages/Faq';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   // State to handle the slide-out cart visibility
@@ -24,6 +25,7 @@ function App() {
   return (
     <CartProvider>
       <Router>
+      <ScrollToTop />
         <div className="flex flex-col min-h-screen bg-brand-cream selection:bg-brand-pink/30">
           
           {/* Pass the openCart function to the Navbar so the 
